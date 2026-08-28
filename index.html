@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rail Alert Live</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  background:#07111f;
+  color:white;
+  min-height:100vh;
+  padding:20px;
+}
+
+.container{
+  max-width:500px;
+  margin:auto;
+}
+
+.header{
+  text-align:center;
+  padding:30px 10px;
+}
+
+.header h1{
+  font-size:32px;
+  margin-bottom:8px;
+}
+
+.header p{
+  color:#9ca3af;
+}
+
+.card{
+  background:#101c2d;
+  border:1px solid #26364d;
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:18px;
+}
+
+.search{
+  display:flex;
+  gap:10px;
+}
+
+input{
+  flex:1;
+  padding:15px;
+  border:none;
+  outline:none;
+  border-radius:12px;
+  background:#1c2a3e;
+  color:white;
+  font-size:16px;
+}
+
+button{
+  padding:15px 18px;
+  border:none;
+  border-radius:12px;
+  background:#2563eb;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:active{
+  transform:scale(.97);
+}
+
+.status-card{
+  display:none;
+  text-align:center;
+}
+
+.light{
+  width:85px;
+  height:85px;
+  border-radius:50%;
+  background:#22c55e;
+  margin:10px auto 20px;
+  box-shadow:0 0 35px #22c55e;
+}
+
+.status{
+  font-size:25px;
+  font-weight:bold;
+  margin-bottom:20px;
+}
+
+.info{
+  text-align:left;
+}
+
+.row{
+  padding:14px 0;
+  border-bottom:1px solid #26364d;
+}
+
+.row:last-child{
+  border-bottom:none;
+}
+
+.label{
+  color:#8fa0b7;
+}
+
+.value{
+  float:right;
+  font-weight:bold;
+}
+
+.notification{
+  display:none;
+  background:#3a2020;
+  border:1px solid #ef4444;
+  padding:15px;
+  border-radius:12px;
+  margin-top:18px;
+  text-align:left;
+}
+
+.demo{
+  text-align:center;
+  color:#718096;
+  font-size:12px;
+  margin-top:20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <h1>🚆 Rail Alert Live</h1>
+    <p>Live Train Status & Safety Alerts</p>
+  </div>
+
+  <div class="card">
+
+    <div class="search">
+      <input
+        id="trainNumber"
+        type="text"
+        placeholder="Enter Train Number"
+      >
+
+      <button onclick="checkTrain()">
+        Check
+      </button>
+    </div>
+
+  </div>
+
+  <div class="card status-card" id="statusCard">
+
+    <div class="light" id="statusLight"></div>
+
+    <div class="status" id="statusText">
+      🟢 Train Running
+    </div>
+
+    <div class="info">
+
+      <div class="row">
+        <span class="label">Train Number</span>
+        <span class="value" id="train"></span>
+      </div>
+
+      <div class="row">
+        <span class="label">Current Location</span>
+        <span class="value" id="location"></span>
+      </div>
+
+      <div class="row">
+        <span class="label">Delay</span>
+        <span class="value" id="delay"></span>
+      </div>
+
+      <div class="row">
+        <span class="label">Last Updated</span>
+        <span class="value" id="updated"></span>
+      </div>
+
+    </div>
+
+    <div class="notification" id="notification">
+      ⚠️ Train status alert will appear here.
+    </div>
+
+  </div>
+
+  <div class="demo">
+    Demo mode — Real railway API is not connected yet.
+  </div>
+
+</div>
+
+<script>
+
+function checkTrain(){
+
+  const number =
+    document.getElementById("trainNumber").value.trim();
+
+  if(number === ""){
+    alert("Please enter a train number.");
+    return;
+  }
+
+  document.getElementById("statusCard").style.display="block";
+
+  document.getElementById("train").textContent=number;
+
+  const locations=[
+    "New Delhi",
+    "Kanpur Central",
+    "Prayagraj Junction",
+    "Varanasi Junction",
+    "Patna Junction",
+    "Howrah Junction"
+  ];
+
+  const location =
+    locations[Math.floor(Math.random()*locations.length)];
+
+  document.getElementById("location").textContent=location;
+
+  document.getElementById("delay").textContent="15 minutes";
+
+  document.getElementById("updated").textContent=
+    new Date().toLocaleTimeString();
+
+  /*
+    Demo status:
+    GREEN = Running
+    RED = Stopped
+    YELLOW = Delayed
+  */
+
+  const light=document.getElementById("statusLight");
+  const status=document.getElementById("statusText");
+  const notification=document.getElementById("notification");
+
+  const random=Math.floor(Math.random()*3);
+
+  if(random===0){
+
+    light.style.background="#22c55e";
+    light.style.boxShadow="0 0 35px #22c55e";
+
+    status.textContent="🟢 Train Running";
+
+    notification.style.display="none";
+
+  }
+
+  else if(random===1){
+
+    light.style.background="#ef4444";
+    light.style.boxShadow="0 0 35px #ef4444";
+
+    status.textContent="🔴 Train Stopped";
+
+    notification.style.display="block";
+
+    notification.textContent=
+      "⚠️ Train is currently stopped near "+location+".";
+
+  }
+
+  else{
+
+    light.style.background="#eab308";
+    light.style.boxShadow="0 0 35px #eab308";
+
+    status.textContent="🟡 Train Delayed";
+
+    notification.style.display="block";
+
+    notification.textContent=
+      "⚠️ Train is running late by 15 minutes.";
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>
